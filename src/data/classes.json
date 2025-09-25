@@ -1,0 +1,67 @@
+[
+  {
+    "id": "CSE101",
+    "subject": "Data Structures",
+    "instructor": "Dr. Sarah Wilson",
+    "room": "Room 201",
+    "location": { 
+      "lat": 40.7589, 
+      "lng": -73.9851,
+      "name": "Computer Science Building, Room 201"
+    },
+    "schedule": "Mon, Wed, Fri 9:00 AM",
+    "sessions": [
+      { 
+        "sessionId": "sess001", 
+        "qrToken": "abc123xyz", 
+        "timestamp": "2025-09-20T09:00:00Z", 
+        "expired": true,
+        "attendees": ["stu001", "stu002"]
+      },
+      { 
+        "sessionId": "sess002", 
+        "qrToken": "def456uvw", 
+        "timestamp": "2025-09-22T09:00:00Z", 
+        "expired": true,
+        "attendees": ["stu001", "stu003"]
+      },
+      { 
+        "sessionId": "sess003", 
+        "qrToken": "ghi789rst", 
+        "timestamp": "2025-09-24T09:00:00Z", 
+        "expired": true,
+        "attendees": ["stu001", "stu002", "stu003"]
+      }
+    ],
+    "tests": ["test001", "test002"]
+  },
+  {
+    "id": "CSE102",
+    "subject": "Database Systems",
+    "instructor": "Prof. Michael Chen",
+    "room": "Room 305",
+    "location": { 
+      "lat": 40.7580, 
+      "lng": -73.9845,
+      "name": "Computer Science Building, Room 305"
+    },
+    "schedule": "Tue, Thu 2:00 PM",
+    "sessions": [
+      { 
+        "sessionId": "sess004", 
+        "qrToken": "jkl012mno", 
+        "timestamp": "2025-09-21T14:00:00Z", 
+        "expired": true,
+        "attendees": ["stu004"]
+      },
+      { 
+        "sessionId": "sess005", 
+        "qrToken": "pqr345stu", 
+        "timestamp": "2025-09-23T14:00:00Z", 
+        "expired": true,
+        "attendees": ["stu004"]
+      }
+    ],
+    "tests": ["test003"]
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "id": "test001",
+    "title": "Data Structures Midterm",
+    "subject": "Data Structures",
+    "classId": "CSE101",
+    "date": "2025-09-18",
+    "maxScore": 100,
+    "type": "midterm",
+    "results": [
+      { "studentId": "stu001", "score": 85, "submittedAt": "2025-09-18T10:30:00Z" },
+      { "studentId": "stu002", "score": 78, "submittedAt": "2025-09-18T10:25:00Z" },
+      { "studentId": "stu003", "score": 95, "submittedAt": "2025-09-18T10:20:00Z" }
+    ]
+  },
+  {
+    "id": "test002",
+    "title": "Arrays and Linked Lists Quiz",
+    "subject": "Data Structures", 
+    "classId": "CSE101",
+    "date": "2025-09-25",
+    "maxScore": 50,
+    "type": "quiz",
+    "results": [
+      { "studentId": "stu001", "score": 46, "submittedAt": "2025-09-25T11:15:00Z" },
+      { "studentId": "stu002", "score": 44, "submittedAt": "2025-09-25T11:20:00Z" },
+      { "studentId": "stu003", "score": 45, "submittedAt": "2025-09-25T11:10:00Z" }
+    ]
+  },
+  {
+    "id": "test003",
+    "title": "SQL Fundamentals Test",
+    "subject": "Database Systems",
+    "classId": "CSE102", 
+    "date": "2025-09-19",
+    "maxScore": 75,
+    "type": "test",
+    "results": [
+      { "studentId": "stu004", "score": 62, "submittedAt": "2025-09-19T15:45:00Z" }
+    ]
+  }
+]

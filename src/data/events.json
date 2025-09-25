@@ -1,0 +1,46 @@
+[
+  {
+    "id": "event001",
+    "title": "Final Project Presentations",
+    "classId": "CSE101",
+    "type": "presentation",
+    "date": "2025-10-15",
+    "time": "9:00 AM",
+    "description": "Students will present their final data structures projects. Each presentation should be 10 minutes followed by Q&A.",
+    "location": "Room 201",
+    "priority": "high"
+  },
+  {
+    "id": "event002", 
+    "title": "Database Design Workshop",
+    "classId": "CSE102",
+    "type": "workshop",
+    "date": "2025-10-08",
+    "time": "2:00 PM",
+    "description": "Hands-on workshop covering advanced database design patterns and optimization techniques.",
+    "location": "Computer Lab 1",
+    "priority": "medium"
+  },
+  {
+    "id": "event003",
+    "title": "Midterm Results Published",
+    "classId": "CSE101", 
+    "type": "announcement",
+    "date": "2025-09-28",
+    "time": "12:00 PM",
+    "description": "Midterm exam results are now available. Please check your scores and schedule office hours if you have questions.",
+    "location": "Online",
+    "priority": "medium"
+  },
+  {
+    "id": "event004",
+    "title": "Guest Lecture: Industry Trends",
+    "classId": "CSE101",
+    "type": "lecture", 
+    "date": "2025-10-12",
+    "time": "9:00 AM",
+    "description": "Special guest lecture by senior software engineer from Google discussing current industry trends and career opportunities.",
+    "location": "Auditorium A",
+    "priority": "high"
+  }
+]

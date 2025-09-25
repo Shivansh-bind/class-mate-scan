@@ -1,0 +1,66 @@
+[
+  {
+    "id": "stu001",
+    "name": "Alice Johnson",
+    "rollNo": "CSE21-001",
+    "class": "CSE101",
+    "age": 19,
+    "email": "alice.johnson@university.edu",
+    "attendance": [
+      { "sessionId": "sess001", "date": "2025-09-20", "classId": "CSE101" },
+      { "sessionId": "sess002", "date": "2025-09-22", "classId": "CSE101" },
+      { "sessionId": "sess003", "date": "2025-09-24", "classId": "CSE101" }
+    ],
+    "tests": [
+      { "testId": "test001", "score": 85 },
+      { "testId": "test002", "score": 92 }
+    ]
+  },
+  {
+    "id": "stu002", 
+    "name": "Bob Smith",
+    "rollNo": "CSE21-002",
+    "class": "CSE101",
+    "age": 20,
+    "email": "bob.smith@university.edu",
+    "attendance": [
+      { "sessionId": "sess001", "date": "2025-09-20", "classId": "CSE101" },
+      { "sessionId": "sess003", "date": "2025-09-24", "classId": "CSE101" }
+    ],
+    "tests": [
+      { "testId": "test001", "score": 78 },
+      { "testId": "test002", "score": 88 }
+    ]
+  },
+  {
+    "id": "stu003",
+    "name": "Carol Davis",
+    "rollNo": "CSE21-003", 
+    "class": "CSE101",
+    "age": 19,
+    "email": "carol.davis@university.edu",
+    "attendance": [
+      { "sessionId": "sess002", "date": "2025-09-22", "classId": "CSE101" },
+      { "sessionId": "sess003", "date": "2025-09-24", "classId": "CSE101" }
+    ],
+    "tests": [
+      { "testId": "test001", "score": 95 },
+      { "testId": "test002", "score": 89 }
+    ]
+  },
+  {
+    "id": "stu004",
+    "name": "David Wilson",
+    "rollNo": "CSE21-004",
+    "class": "CSE102", 
+    "age": 21,
+    "email": "david.wilson@university.edu",
+    "attendance": [
+      { "sessionId": "sess004", "date": "2025-09-21", "classId": "CSE102" },
+      { "sessionId": "sess005", "date": "2025-09-23", "classId": "CSE102" }
+    ],
+    "tests": [
+      { "testId": "test003", "score": 82 }
+    ]
+  }
+]
