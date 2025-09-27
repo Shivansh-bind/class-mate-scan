@@ -1,8 +1,28 @@
 import { Link, useLocation } from "react-router-dom";
-import { Users, BookOpen, ClipboardCheck, Calendar, QrCode, GraduationCap } from "lucide-react";
+import { Users, BookOpen, ClipboardCheck, Calendar, QrCode, GraduationCap, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "@/hooks/use-toast";
 
 const Navbar = () => {
   const location = useLocation();
+  const { signOut, profile } = useAuth();
+
+  const handleSignOut = async () => {
+    const { error } = await signOut();
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign out",
+        variant: "destructive"
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: "Signed out successfully"
+      });
+    }
+  };
 
   const navItems = [
     { path: "/", icon: GraduationCap, label: "Dashboard" },
@@ -26,26 +46,43 @@ const Navbar = () => {
             </h1>
           </div>
           
-          <div className="hidden md:flex items-center space-x-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.path;
-              
-              return (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 ${
-                    isActive
-                      ? "bg-primary text-primary-foreground shadow-md"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted"
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  <span className="text-sm font-medium">{item.label}</span>
-                </Link>
-              );
-            })}
+          <div className="flex items-center space-x-4">
+            {profile && (
+              <span className="text-sm text-muted-foreground hidden md:block">
+                Welcome, {profile.full_name} ({profile.role})
+              </span>
+            )}
+          
+            <div className="hidden md:flex items-center space-x-1">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = location.pathname === item.path;
+                
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 ${
+                      isActive
+                        ? "bg-primary text-primary-foreground shadow-md"
+                        : "text-muted-foreground hover:text-foreground hover:bg-muted"
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span className="text-sm font-medium">{item.label}</span>
+                  </Link>
+                );
+              })}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleSignOut}
+                className="ml-2"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Sign Out
+              </Button>
+            </div>
           </div>
 
           {/* Mobile menu */}
