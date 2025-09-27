@@ -1,129 +1,75 @@
 import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { z } from 'zod';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
-import { toast } from '@/hooks/use-toast';
+import { z } from 'zod';
+import { Mail, Lock, User, UserCheck } from 'lucide-react';
 
-const signInSchema = z.object({
-  email: z.string().trim().email({ message: "Invalid email address" }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters" })
+const authSchema = z.object({
+  email: z.string().trim().email({ message: "Invalid email address" }).max(255),
+  password: z.string().min(6, { message: "Password must be at least 6 characters" }).max(100),
+  fullName: z.string().trim().min(2, { message: "Name must be at least 2 characters" }).max(100).optional(),
+  role: z.enum(['student', 'teacher', 'admin']).optional()
 });
 
-const signUpSchema = z.object({
-  email: z.string().trim().email({ message: "Invalid email address" }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
-  fullName: z.string().trim().min(2, { message: "Name must be at least 2 characters" }),
-  role: z.enum(['student', 'teacher', 'admin'])
-});
-
-const Auth = () => {
-  const { user, signIn, signUp, loading } = useAuth();
+export default function Auth() {
+  const { user, loading, signIn, signUp } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    fullName: '',
+    role: 'student' as 'student' | 'teacher' | 'admin'
+  });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   // Redirect if already authenticated
-  if (user && !loading) {
+  if (!loading && user) {
     return <Navigate to="/" replace />;
   }
 
-  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setErrors({});
-
-    const formData = new FormData(e.currentTarget);
-    const data = {
-      email: formData.get('email') as string,
-      password: formData.get('password') as string
-    };
-
+  const validateForm = (isSignUp: boolean) => {
     try {
-      const result = signInSchema.safeParse(data);
-      if (!result.success) {
+      const dataToValidate = isSignUp 
+        ? formData 
+        : { email: formData.email, password: formData.password };
+      
+      authSchema.parse(dataToValidate);
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
         const fieldErrors: Record<string, string> = {};
-        result.error.errors.forEach((error) => {
-          fieldErrors[error.path[0]] = error.message;
+        error.errors.forEach((err) => {
+          if (err.path[0]) {
+            fieldErrors[err.path[0] as string] = err.message;
+          }
         });
         setErrors(fieldErrors);
-        return;
       }
-
-      const { error } = await signIn(result.data.email, result.data.password);
-      
-      if (error) {
-        if (error.message.includes('Invalid login credentials')) {
-          setErrors({ form: 'Invalid email or password' });
-        } else {
-          setErrors({ form: error.message });
-        }
-      } else {
-        toast({
-          title: "Success",
-          description: "Signed in successfully!"
-        });
-      }
-    } catch (error) {
-      setErrors({ form: 'An unexpected error occurred' });
-    } finally {
-      setIsLoading(false);
+      return false;
     }
   };
 
-  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSignIn = async () => {
+    if (!validateForm(false)) return;
+    
     setIsLoading(true);
-    setErrors({});
+    await signIn(formData.email, formData.password);
+    setIsLoading(false);
+  };
 
-    const formData = new FormData(e.currentTarget);
-    const data = {
-      email: formData.get('email') as string,
-      password: formData.get('password') as string,
-      fullName: formData.get('fullName') as string,
-      role: formData.get('role') as 'student' | 'teacher' | 'admin'
-    };
-
-    try {
-      const result = signUpSchema.safeParse(data);
-      if (!result.success) {
-        const fieldErrors: Record<string, string> = {};
-        result.error.errors.forEach((error) => {
-          fieldErrors[error.path[0]] = error.message;
-        });
-        setErrors(fieldErrors);
-        return;
-      }
-
-      const { error } = await signUp(
-        result.data.email,
-        result.data.password,
-        result.data.fullName,
-        result.data.role
-      );
-      
-      if (error) {
-        if (error.message.includes('User already registered')) {
-          setErrors({ form: 'An account with this email already exists' });
-        } else {
-          setErrors({ form: error.message });
-        }
-      } else {
-        toast({
-          title: "Success",
-          description: "Account created successfully! Please check your email to verify your account."
-        });
-      }
-    } catch (error) {
-      setErrors({ form: 'An unexpected error occurred' });
-    } finally {
-      setIsLoading(false);
-    }
+  const handleSignUp = async () => {
+    if (!validateForm(true)) return;
+    
+    setIsLoading(true);
+    await signUp(formData.email, formData.password, formData.fullName, formData.role);
+    setIsLoading(false);
   };
 
   if (loading) {
@@ -135,107 +81,126 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-secondary/20 p-4">
+      <Card className="w-full max-w-md mx-auto shadow-lg">
+        <CardHeader className="text-center space-y-2">
+          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
             SmartClass
           </CardTitle>
           <CardDescription>
-            Sign in to your account or create a new one
+            Smart Classroom & Attendance Scheduler
           </CardDescription>
         </CardHeader>
+        
         <CardContent>
           <Tabs defaultValue="signin" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-2 mb-6">
               <TabsTrigger value="signin">Sign In</TabsTrigger>
               <TabsTrigger value="signup">Sign Up</TabsTrigger>
             </TabsList>
             
-            <TabsContent value="signin" className="space-y-4 mt-4">
-              <form onSubmit={handleSignIn} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="signin-email">Email</Label>
-                  <Input 
+            <TabsContent value="signin" className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="signin-email">Email</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
                     id="signin-email"
-                    name="email" 
-                    type="email" 
+                    type="email"
                     placeholder="Enter your email"
-                    required 
+                    className="pl-10"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   />
-                  {errors.email && (
-                    <p className="text-sm text-destructive">{errors.email}</p>
-                  )}
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signin-password">Password</Label>
-                  <Input 
+                {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="signin-password">Password</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
                     id="signin-password"
-                    name="password" 
-                    type="password" 
+                    type="password"
                     placeholder="Enter your password"
-                    required 
+                    className="pl-10"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   />
-                  {errors.password && (
-                    <p className="text-sm text-destructive">{errors.password}</p>
-                  )}
                 </div>
-                {errors.form && (
-                  <Alert>
-                    <AlertDescription>{errors.form}</AlertDescription>
-                  </Alert>
-                )}
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? 'Signing In...' : 'Sign In'}
-                </Button>
-              </form>
+                {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
+              </div>
+              
+              <Button 
+                onClick={handleSignIn} 
+                className="w-full" 
+                disabled={isLoading}
+              >
+                {isLoading ? "Signing in..." : "Sign In"}
+              </Button>
             </TabsContent>
             
-            <TabsContent value="signup" className="space-y-4 mt-4">
-              <form onSubmit={handleSignUp} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="signup-name">Full Name</Label>
-                  <Input 
+            <TabsContent value="signup" className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="signup-name">Full Name</Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
                     id="signup-name"
-                    name="fullName" 
-                    type="text" 
+                    type="text"
                     placeholder="Enter your full name"
-                    required 
+                    className="pl-10"
+                    value={formData.fullName}
+                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                   />
-                  {errors.fullName && (
-                    <p className="text-sm text-destructive">{errors.fullName}</p>
-                  )}
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-email">Email</Label>
-                  <Input 
+                {errors.fullName && <p className="text-sm text-destructive">{errors.fullName}</p>}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="signup-email">Email</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
                     id="signup-email"
-                    name="email" 
-                    type="email" 
+                    type="email"
                     placeholder="Enter your email"
-                    required 
+                    className="pl-10"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   />
-                  {errors.email && (
-                    <p className="text-sm text-destructive">{errors.email}</p>
-                  )}
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-password">Password</Label>
-                  <Input 
+                {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="signup-password">Password</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
                     id="signup-password"
-                    name="password" 
-                    type="password" 
+                    type="password"
                     placeholder="Create a password (min 6 characters)"
-                    required 
+                    className="pl-10"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   />
-                  {errors.password && (
-                    <p className="text-sm text-destructive">{errors.password}</p>
-                  )}
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signup-role">Role</Label>
-                  <Select name="role" required>
-                    <SelectTrigger>
+                {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="signup-role">Role</Label>
+                <div className="relative">
+                  <UserCheck className="absolute left-3 top-3 h-4 w-4 text-muted-foreground z-10" />
+                  <Select 
+                    value={formData.role} 
+                    onValueChange={(value: 'student' | 'teacher' | 'admin') => 
+                      setFormData({ ...formData, role: value })
+                    }
+                  >
+                    <SelectTrigger className="pl-10">
                       <SelectValue placeholder="Select your role" />
                     </SelectTrigger>
                     <SelectContent>
@@ -244,25 +209,21 @@ const Auth = () => {
                       <SelectItem value="admin">Admin</SelectItem>
                     </SelectContent>
                   </Select>
-                  {errors.role && (
-                    <p className="text-sm text-destructive">{errors.role}</p>
-                  )}
                 </div>
-                {errors.form && (
-                  <Alert>
-                    <AlertDescription>{errors.form}</AlertDescription>
-                  </Alert>
-                )}
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? 'Creating Account...' : 'Create Account'}
-                </Button>
-              </form>
+                {errors.role && <p className="text-sm text-destructive">{errors.role}</p>}
+              </div>
+              
+              <Button 
+                onClick={handleSignUp} 
+                className="w-full" 
+                disabled={isLoading}
+              >
+                {isLoading ? "Creating account..." : "Create Account"}
+              </Button>
             </TabsContent>
           </Tabs>
         </CardContent>
       </Card>
     </div>
   );
-};
-
-export default Auth;
+}

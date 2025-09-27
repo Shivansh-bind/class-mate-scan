@@ -9,19 +9,7 @@ const Navbar = () => {
   const { signOut, profile } = useAuth();
 
   const handleSignOut = async () => {
-    const { error } = await signOut();
-    if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to sign out",
-        variant: "destructive"
-      });
-    } else {
-      toast({
-        title: "Success",
-        description: "Signed out successfully"
-      });
-    }
+    await signOut();
   };
 
   const navItems = [
