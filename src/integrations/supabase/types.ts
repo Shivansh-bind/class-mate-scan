@@ -14,36 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      admins: {
-        Row: {
-          created_at: string
-          email: string
-          id: string
-          name: string
-          role: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          email: string
-          id?: string
-          name: string
-          role?: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          email?: string
-          id?: string
-          name?: string
-          role?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       profiles: {
         Row: {
           created_at: string
@@ -69,75 +39,6 @@ export type Database = {
           full_name?: string
           id?: string
           role?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      students: {
-        Row: {
-          class: string
-          created_at: string
-          email: string
-          id: string
-          name: string
-          role: string
-          section: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          class: string
-          created_at?: string
-          email: string
-          id?: string
-          name: string
-          role?: string
-          section: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          class?: string
-          created_at?: string
-          email?: string
-          id?: string
-          name?: string
-          role?: string
-          section?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      teachers: {
-        Row: {
-          created_at: string
-          email: string
-          id: string
-          name: string
-          role: string
-          subject: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          email: string
-          id?: string
-          name: string
-          role?: string
-          subject: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          email?: string
-          id?: string
-          name?: string
-          role?: string
-          subject?: string
           updated_at?: string
           user_id?: string
         }
