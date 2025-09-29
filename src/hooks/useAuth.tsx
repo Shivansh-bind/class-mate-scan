@@ -136,11 +136,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return { error };
       }
 
-      toast({
-        title: "Welcome back!",
-        description: "You have been signed in successfully."
-      });
-
+      // Don't show success toast here - let the redirect handle it
       return { error: null };
     } catch (error) {
       return { error };

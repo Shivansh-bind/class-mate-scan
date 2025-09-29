@@ -1,36 +1,26 @@
 import { useEffect } from 'react';
-import { Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 
-interface ProtectedRouteProps {
+interface RoleBasedRouteProps {
   children: React.ReactNode;
 }
 
-export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+export default function RoleBasedRoute({ children }: RoleBasedRouteProps) {
   const { user, profile, loading } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
     if (!loading && user && profile) {
-      const currentPath = location.pathname;
+      // Redirect based on user role
+      const currentPath = window.location.pathname;
+      const rolePath = `/${profile.role}`;
       
-      // Redirect to role-specific dashboard if on root path
-      if (currentPath === '/') {
-        navigate(`/${profile.role}`, { replace: true });
-        return;
-      }
-      
-      // Check if user is trying to access wrong role dashboard
-      const roleDashboards = ['/admin', '/teacher', '/student'];
-      const isOnRoleDashboard = roleDashboards.some(path => currentPath === path);
-      
-      if (isOnRoleDashboard && currentPath !== `/${profile.role}`) {
-        navigate(`/${profile.role}`, { replace: true });
-        return;
+      // If user is on root path or wrong role path, redirect to their role-specific dashboard
+      if (currentPath === '/' || (currentPath !== rolePath && !currentPath.startsWith('/scan') && !currentPath.startsWith('/classes') && !currentPath.startsWith('/students') && !currentPath.startsWith('/tests') && !currentPath.startsWith('/events'))) {
+        window.location.href = rolePath;
       }
     }
-  }, [user, profile, loading, navigate, location.pathname]);
+  }, [user, profile, loading]);
 
   if (loading) {
     return (

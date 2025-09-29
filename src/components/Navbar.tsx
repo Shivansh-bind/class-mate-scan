@@ -12,14 +12,39 @@ const Navbar = () => {
     await signOut();
   };
 
-  const navItems = [
-    { path: "/", icon: GraduationCap, label: "Dashboard" },
-    { path: "/students", icon: Users, label: "Students" },
-    { path: "/classes", icon: BookOpen, label: "Classes" },
-    { path: "/tests", icon: ClipboardCheck, label: "Tests" },
-    { path: "/events", icon: Calendar, label: "Events" },
-    { path: "/scan", icon: QrCode, label: "QR Scan" },
-  ];
+  const getNavItems = () => {
+    const baseItems = [
+      { path: "/scan", icon: QrCode, label: "QR Scan" },
+    ];
+
+    if (profile?.role === 'admin') {
+      return [
+        { path: "/admin", icon: GraduationCap, label: "Admin Dashboard" },
+        { path: "/students", icon: Users, label: "Students" },
+        { path: "/classes", icon: BookOpen, label: "Classes" },
+        { path: "/tests", icon: ClipboardCheck, label: "Tests" },
+        { path: "/events", icon: Calendar, label: "Events" },
+        ...baseItems,
+      ];
+    } else if (profile?.role === 'teacher') {
+      return [
+        { path: "/teacher", icon: GraduationCap, label: "Teacher Dashboard" },
+        { path: "/students", icon: Users, label: "Students" },
+        { path: "/classes", icon: BookOpen, label: "Classes" },
+        { path: "/tests", icon: ClipboardCheck, label: "Tests" },
+        ...baseItems,
+      ];
+    } else {
+      return [
+        { path: "/student", icon: GraduationCap, label: "My Dashboard" },
+        { path: "/classes", icon: BookOpen, label: "Classes" },
+        { path: "/events", icon: Calendar, label: "Events" },
+        ...baseItems,
+      ];
+    }
+  };
+
+  const navItems = getNavItems();
 
   return (
     <nav className="bg-card border-b border-border sticky top-0 z-50 backdrop-blur supports-[backdrop-filter]:bg-card/95">
